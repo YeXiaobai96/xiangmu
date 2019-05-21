@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yofc.trace.mapper.AlarmMapper">
+
+    <resultMap id="BaseResultMap" type="com.yofc.trace.entity.Alarm">
+        <id column="id" property="id"/>
+        <result column="ack_ts" property="ackTs"/>
+        <result column="clear_ts" property="clearTs"/>
+        <result column="additional_info" property="additionalInfo"/>
+        <result column="end_ts" property="endTs"/>
+        <result column="originator_id" property="originatorId"/>
+        <result column="originator_type" property="originatorType"/>
+        <result column="propagate" property="propagate"/>
+        <result column="severity" property="severity"/>
+        <result column="start_ts" property="startTs"/>
+        <result column="status" property="status"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="type" property="type"/>
+    </resultMap>
+
+    <select id="findAlarm" resultMap="BaseResultMap" parameterType="com.yofc.trace.entity.Alarm">
+        select *
+        from alarm
+        where
+        tenant_id in (select DISTINCT tenant_id FROM device where id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>)
+        order
+        by
+        start_ts
+        desc
+        limit
+        5
+    </select>
+
+</mapper>

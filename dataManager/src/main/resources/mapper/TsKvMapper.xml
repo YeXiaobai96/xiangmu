@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yofc.trace.mapper.TsKvMapper">
+
+    <resultMap id="BaseResultMap" type="com.yofc.trace.entity.TsKv">
+        <id column="entity_id" property="entityId"/>
+        <result column="entity_type" property="entityType"/>
+        <result column="key" property="key"/>
+        <result column="h_time" property="hTime"/>
+        <result column="str_v" property="strV"/>
+        <result column="bool_v" property="boolV"/>
+        <result column="long_v" property="longV"/>
+        <result column="dbl_v" property="dblV"/>
+        <result column="time" property="time"/>
+        <result column="type" property="type"/>
+    </resultMap>
+
+
+    <select id="findTsKvDay" resultType="com.yofc.trace.entity.DataVO" parameterType="com.yofc.trace.entity.TsKv">
+        select id,h.time,
+        <choose>
+            <when test="key =='shine' or key =='NH4' or key =='PH'">
+                long_v as max
+            </when>
+            <otherwise>
+                dbl_v as max
+            </otherwise>
+        </choose>
+        from data_help h
+        left join
+        (select * from ts_kv_m where entity_id = #{entityId} and "key" = #{key}
+        AND "time" BETWEEN now() - interval '1 days' and now()) a
+        on h."id" = a."type"
+        ORDER BY h.id
+    </select>
+
+
+    <select id="findTsKvByMonth" resultType="com.yofc.trace.entity.DataMonthVO" parameterType="map">
+        select id,dat as time,
+        <choose>
+            <when test="key =='shine' or key =='NH4' or key =='PH'">
+                long_max as max,long_min as min,long_avg as avg,long_max_avg as maxavg,long_min_avg as minavg
+            </when>
+            <otherwise>
+                dbl_max as max,dbl_min as min,dbl_avg as avg,dbl_max_avg as maxavg,dbl_min_avg as minavg
+            </otherwise>
+        </choose>
+        from(
+        select id,to_char(to_timestamp((#{time}-id*86400)),'yyyy-MM-dd') as dat from data_help where <![CDATA[id<31 ]]>)
+        h left join (
+        select
+        long_max,dbl_max,long_min,dbl_min,long_avg,dbl_avg,long_max_avg,dbl_max_avg,long_min_avg,dbl_min_avg,to_char((time),'yyyy-MM-dd')
+        as formda from ts_kv_d where entity_id=#{entityId} AND "key"=#{key} AND "time" BETWEEN now() - interval '30
+        days' and now()) a
+        on a.formda=h.dat ORDER BY id desc
+    </select>
+
+</mapper>

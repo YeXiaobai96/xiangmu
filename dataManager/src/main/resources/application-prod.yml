@@ -1,0 +1,23 @@
+server:
+  port: 9096
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://139.224.9.212:5432/thingsboard?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: usertwo
+    password: 1234567
+## Mybatis 配置
+mybatis:
+  typeAliasesPackage: com.yofc.trace.entity
+  mapperLocations: classpath:mapper/*.xml
+
+logging:
+  level:
+    root: INFO
+    com.yofc.trace.mapper: debug
+    org:
+      springframework:
+        web: DEBUG
