@@ -1,0 +1,36 @@
+.DS_Store
+frontend/node_modules
+frontend/dist
+limits-front/dist
+limits-front/node_modules
+limits-front/frontend/dist
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*git
+limits-front/npm-debug.log*
+limits-front/yarn-debug.log*
+limits-front/yarn-error.log*git
+limits-front/.history
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.history
+#back
+log/*
+*.iml
+*.log
+*.classpath
+*.settings
+.idea/*
+*.iml
+target/*
